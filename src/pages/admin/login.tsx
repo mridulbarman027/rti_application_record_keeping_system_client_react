@@ -38,16 +38,24 @@ function AdminLogin() {
       query: `
         query {
           adminLogin(username: "${username}", password: "${password}") {
+            adminId
             token
+            tokenExpiration
           }
         }
       `
     }
 
     axios.post('http://localhost:3000/graphql', requestBody).then((res) => {
-      console.log(res);
-    }).catch( error => {
-      console.log(error);
+      setVisible(false);
+      if (res.status !== 200) {
+        setModalTitle('Wrong password');
+        setModalOpened(true);
+      }
+    }).catch(error => {
+      setVisible(false);
+      setModalTitle('Wrong password');
+      setModalOpened(true);
     });
 
   }
@@ -66,7 +74,7 @@ function AdminLogin() {
           onClose={() => setModalOpened(false)}
           title="Login alert"
         >
-          <span>{modalTitle}</span>
+          <span className='text-lg font-bold text-red-500'>{modalTitle}</span>
         </Modal>
 
         <form onSubmit={submitLogin}>
