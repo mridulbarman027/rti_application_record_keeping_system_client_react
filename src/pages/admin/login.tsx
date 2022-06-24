@@ -1,4 +1,5 @@
 import { LoadingOverlay, Modal } from '@mantine/core';
+import axios from 'axios';
 import React, { useState } from 'react'
 import AdminNavbar from '../../components/Common/Navbar/AdminNavbar';
 
@@ -19,20 +20,36 @@ function AdminLogin() {
     const username = target.username.value;
     const password = target.password.value;
 
-    if (!username && username.length < 4) {
+    if (!username || username.length < 4) {
       setModalTitle("Invalid username")
       setModalOpened(true);
       return;
     }
 
-    if (!password && password.length < 6) {
+    if (!password || password.length < 4) {
       setModalTitle("Invalid password")
       setModalOpened(true);
       return;
     }
 
-    console.log(username + " " + password);
     setVisible((v) => !v);
+
+    const requestBody = {
+      query: `
+        query {
+          adminLogin(username: "${username}", password: "${password}") {
+            token
+          }
+        }
+      `
+    }
+
+    axios.post('http://localhost:3000/graphql', requestBody).then((res) => {
+      console.log(res);
+    }).catch( error => {
+      console.log(error);
+    });
+
   }
 
   return (
@@ -60,7 +77,7 @@ function AdminLogin() {
 
             <div className='w-full flex mb-4'>
               <div className='w-24 text-left flex items-center'>Username: </div>
-              <input type='text' maxLength={20} name='username' className='w-60 p-1 border-[1px] text-base ml-2' />
+              <input type='text' maxLength={40} name='username' className='w-60 p-1 border-[1px] text-base ml-2' />
             </div>
 
             <div className='w-full flex mb-4'>
