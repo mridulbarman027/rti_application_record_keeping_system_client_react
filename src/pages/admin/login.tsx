@@ -1,6 +1,7 @@
 import { LoadingOverlay, Modal } from '@mantine/core';
 import axios from 'axios';
 import React, { useState } from 'react'
+import { Router, useNavigate } from 'react-router-dom';
 import AdminNavbar from '../../components/Common/Navbar/AdminNavbar';
 
 function AdminLogin() {
@@ -9,6 +10,8 @@ function AdminLogin() {
 
   const [modalOpened, setModalOpened] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
+
+  const navigate = useNavigate();
 
   const submitLogin = (event: React.SyntheticEvent) => {
     event.preventDefault();
@@ -51,7 +54,16 @@ function AdminLogin() {
       if (res.status !== 200) {
         setModalTitle('Wrong password');
         setModalOpened(true);
+        return;
       }
+      const loginData = res.data.data.adminLogin;
+      const adminId = loginData.adminId;
+      const token = loginData.token;
+      localStorage.setItem('adminId', adminId);
+      localStorage.setItem('auth', token);
+
+      navigate('/admin/adminApplications');
+      
     }).catch(error => {
       setVisible(false);
       setModalTitle('Wrong password');
