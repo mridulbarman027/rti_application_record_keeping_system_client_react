@@ -3,7 +3,7 @@ import axios from 'axios';
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import AdminNavbar from '../../components/Common/Navbar/AdminNavbar';
-import { Graphql } from '../../utils';
+import { GraphqlApi } from '../../utils';
 
 function AdminLogin() {
 
@@ -50,7 +50,7 @@ function AdminLogin() {
       `
     }
 
-    axios.post(Graphql.API, requestBody).then((res) => {
+    axios.post(GraphqlApi, requestBody).then((res) => {
       setVisible(false);
       if (res.status !== 200) {
         setModalTitle('Wrong password');

@@ -1,3 +1,1 @@
-export enum Graphql {
-    API = 'http://localhost:3000/graphql'
-}
+export const GraphqlApi = 'http://localhost:3000/graphql';
