@@ -63,7 +63,7 @@ function AdminLogin() {
       localStorage.setItem('auth', token);
 
       navigate('/admin/adminApplications');
-      
+
     }).catch(error => {
       setVisible(false);
       setModalTitle('Wrong password');
