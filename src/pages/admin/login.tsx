@@ -1,8 +1,9 @@
 import { LoadingOverlay, Modal } from '@mantine/core';
 import axios from 'axios';
 import React, { useState } from 'react'
-import { Router, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import AdminNavbar from '../../components/Common/Navbar/AdminNavbar';
+import { Graphql } from '../../utils';
 
 function AdminLogin() {
 
@@ -49,7 +50,7 @@ function AdminLogin() {
       `
     }
 
-    axios.post('http://localhost:3000/graphql', requestBody).then((res) => {
+    axios.post(Graphql.API, requestBody).then((res) => {
       setVisible(false);
       if (res.status !== 200) {
         setModalTitle('Wrong password');
