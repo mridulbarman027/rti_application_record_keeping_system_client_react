@@ -10,6 +10,6 @@ export const GraphqlRoute = '/graphql';
 export const API = axios.create({ baseURL: baseUrl });
 
 export const adminLogout = (navigate: NavigateFunction) => {
-    localStorage.clear();
+    localStorage.setItem('auth', '');
     navigate('/admin/adminLogin');
 }

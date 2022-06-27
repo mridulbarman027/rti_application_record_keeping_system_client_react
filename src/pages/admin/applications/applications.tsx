@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { adminLogout, API, GraphqlRoute } from '../../../utils';
+import { adminVerifyToken } from '../../../api';
+import { adminLogout, GraphqlRoute } from '../../../utils';
 
 function Applications() {
 
@@ -19,10 +20,8 @@ function Applications() {
   useEffect(() => {
     const savedToken = localStorage.getItem('auth');
     if (savedToken && savedToken.length > 2) {
-      const instance = API;
-      instance.defaults.headers.common['Authorization'] = savedToken;
-      
-      instance.post(GraphqlRoute, validateRequestBody).then((res) => {
+
+      adminVerifyToken(GraphqlRoute, validateRequestBody).then((res) => {
         const validatorData = res.data.data;
         const isVerified = validatorData.adminVerifyToken.isVerified;
         if (!validatorData || !isVerified) {
