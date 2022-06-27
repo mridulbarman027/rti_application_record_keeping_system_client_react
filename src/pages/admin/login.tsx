@@ -1,6 +1,6 @@
 import { LoadingOverlay, Modal } from '@mantine/core';
 import axios from 'axios';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import AdminNavbar from '../../components/Common/Navbar/AdminNavbar';
 import { GraphqlApi } from '../../utils';
@@ -72,6 +72,31 @@ function AdminLogin() {
     });
 
   }
+
+  /* const requestBody = {
+    query: `
+        query {
+          adminLogin(username: "${username}", password: "${password}") {
+            adminId
+            token
+            tokenExpiration
+          }
+        }
+      `
+  }
+
+  useEffect(() => {
+    axios.
+  }, []); */
+
+  useEffect(() => {
+    const savedToken = localStorage.getItem('auth');
+
+    if (savedToken && savedToken.length > 2) {
+      navigate('/admin/adminApplications');
+      return;
+    }
+  }, []);
 
   return (
     <div className='w-full h-full flex justify-center items-center flex-col'>
