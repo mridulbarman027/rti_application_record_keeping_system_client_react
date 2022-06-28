@@ -1,9 +1,10 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
 import LoginSignupNavbar from '../components/Common/Navbar/LoginSignupNavbar';
 
 function Signup() {
   return (
-    <div className='w-full h-full flex justify-center items-center flex-col'>
+    <>
 
       <LoginSignupNavbar />
 
@@ -37,7 +38,9 @@ function Signup() {
 
             <input className='border-[1px] mb-4 border-blue-800 bg-blue-600 hover:bg-blue-900 cursor-pointer text-white rounded-md pl-10 pr-10 pt-[4px] pb-[6px] flex items-center justify-center' type="submit" value='Signup' />
 
-            <a href='/login'><div className='font-semibold text-sm text-blue-400 mb-4 hover:underline'>Go to login page</div></a>
+            <Link to={`/login`}>
+              <div className='font-semibold text-sm text-blue-400 mb-4 hover:underline'>Go to login page</div>
+            </Link>
 
           </div>
 
@@ -47,7 +50,7 @@ function Signup() {
 
 
 
-    </div>
+    </>
   )
 }
 

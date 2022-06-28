@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { adminVerifyToken } from '../../../api';
+import AdminNavbar from '../../../components/Common/Navbar/AdminNavbar';
 import { adminLogout, GraphqlRoute } from '../../../utils';
 
 function Applications() {
@@ -39,7 +40,11 @@ function Applications() {
 
 
   return (
-    <div>Applications</div>
+    <>
+
+      <AdminNavbar />
+
+    </>
   )
 }
 

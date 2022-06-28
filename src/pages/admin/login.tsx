@@ -73,22 +73,6 @@ function AdminLogin() {
 
   }
 
-  /* const requestBody = {
-    query: `
-        query {
-          adminLogin(username: "${username}", password: "${password}") {
-            adminId
-            token
-            tokenExpiration
-          }
-        }
-      `
-  }
-
-  useEffect(() => {
-    axios.
-  }, []); */
-
   useEffect(() => {
     const savedToken = localStorage.getItem('auth');
 
@@ -99,7 +83,7 @@ function AdminLogin() {
   }, []);
 
   return (
-    <div className='w-full h-full flex justify-center items-center flex-col'>
+    <>
 
       <AdminNavbar />
 
@@ -139,7 +123,7 @@ function AdminLogin() {
 
       </div>
 
-    </div>
+    </>
   )
 }
 

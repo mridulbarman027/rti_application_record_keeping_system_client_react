@@ -9,19 +9,21 @@ import Signup from './pages/signup';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path='/' element={ <Home /> } /> 
-        <Route path='login' element={ <Login /> } /> 
-        <Route path='signup' element={ <Signup /> } /> 
-        <Route path='admin' element={ <AdminIndex /> }>
-          <Route path='adminLogin' element={ <AdminLogin /> } />
-          <Route path='adminApplications' element={ <Applications /> } />
-          <Route path='adminApplications/:applicationId' element={ <ApplicationView /> } />
-        </Route>
-        <Route path='*' element={ <Login /> }></Route>
-      </Routes>
-    </BrowserRouter>
+    <div className='w-full h-full flex justify-center items-center flex-col'>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='login' element={<Login />} />
+          <Route path='signup' element={<Signup />} />
+          <Route path='admin' element={<AdminIndex />}>
+            <Route path='adminLogin' element={<AdminLogin />} />
+            <Route path='adminApplications' element={<Applications />} />
+            <Route path='adminApplications/:applicationId' element={<ApplicationView />} />
+          </Route>
+          <Route path='*' element={<Login />}></Route>
+        </Routes>
+      </BrowserRouter>
+    </div>
   );
 }
 
