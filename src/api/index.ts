@@ -2,7 +2,7 @@ import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { API } from "../utils";
 
 API.interceptors.request.use((req: AxiosRequestConfig) => {
-    const savedToken = localStorage.getItem('auth');
+    const savedToken = localStorage.getItem('adminAuth');
     if (savedToken && req && req.headers) {
         req.headers.Authorization = savedToken;
     }

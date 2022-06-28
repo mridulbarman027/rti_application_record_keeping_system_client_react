@@ -19,7 +19,7 @@ function Applications() {
   }
 
   useEffect(() => {
-    const savedToken = localStorage.getItem('auth');
+    const savedToken = localStorage.getItem('adminAuth');
     if (savedToken && savedToken.length > 2) {
 
       adminVerifyToken(GraphqlRoute, validateRequestBody).then((res) => {

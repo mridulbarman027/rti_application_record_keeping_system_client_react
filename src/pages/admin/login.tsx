@@ -61,7 +61,7 @@ function AdminLogin() {
       const adminId = loginData.adminId;
       const token = loginData.token;
       localStorage.setItem('adminId', adminId);
-      localStorage.setItem('auth', token);
+      localStorage.setItem('adminAuth', token);
 
       navigate('/admin/adminApplications');
 
@@ -74,7 +74,7 @@ function AdminLogin() {
   }
 
   useEffect(() => {
-    const savedToken = localStorage.getItem('auth');
+    const savedToken = localStorage.getItem('adminAuth');
 
     if (savedToken && savedToken.length > 2) {
       navigate('/admin/adminApplications');
