@@ -22,4 +22,4 @@ function ApplicationView() {
   )
 }
 
-export default ApplicationView
+export default ApplicationView;

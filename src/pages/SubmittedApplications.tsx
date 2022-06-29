@@ -1,9 +1,9 @@
 import React from 'react'
 
-function submittedApplications() {
+function SubmittedApplications() {
   return (
-    <div>submittedApplications</div>
+    <div>SubmittedApplications</div>
   )
 }
 
-export default submittedApplications
+export default SubmittedApplications;
