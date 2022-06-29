@@ -2,7 +2,7 @@ import { LoadingOverlay, Modal } from '@mantine/core';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import AdminNavbar from '../../components/Common/Navbar/AdminNavbar';
+import AdminNavbar from '../../components/Common/Navbar/Admin/AdminNavbar';
 import { GraphqlApi } from '../../utils';
 
 function AdminLogin() {

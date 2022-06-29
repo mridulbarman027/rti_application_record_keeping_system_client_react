@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { graphqlApiPostAdmin } from '../../../api';
-import AdminNavbar from '../../../components/Common/Navbar/AdminNavbar';
+import AdminNavbar from '../../../components/Common/Navbar/Admin/AdminNavbar';
 import { adminLogout, GraphqlRoute } from '../../../utils';
 
 function Applications() {

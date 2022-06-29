@@ -1,6 +1,6 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import AdminNavbar from '../../../components/Common/Navbar/AdminNavbar'
+import AdminNavbar from '../../../components/Common/Navbar/Admin/AdminNavbar'
 
 function ApplicationView() {
 
