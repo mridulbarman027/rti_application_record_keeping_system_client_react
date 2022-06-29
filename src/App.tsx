@@ -2,12 +2,12 @@ import { MantineProvider } from '@mantine/core';
 import { NotificationsProvider } from '@mantine/notifications';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import AdminIndex from './pages/admin';
-import Applications from './pages/admin/applications/applications';
-import ApplicationView from './pages/admin/applications/applicationView';
-import AdminLogin from './pages/admin/login';
-import Home from './pages/home';
-import Login from './pages/login';
-import Signup from './pages/signup';
+import Applications from './pages/admin/applications/Aapplications';
+import ApplicationView from './pages/admin/applications/ApplicationView';
+import AdminLogin from './pages/admin/Login';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
 
 function App() {
   return (
