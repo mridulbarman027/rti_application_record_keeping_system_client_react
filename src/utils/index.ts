@@ -7,9 +7,16 @@ export const GraphqlApi = baseUrl+ '/graphql';
 
 export const GraphqlRoute = '/graphql';
 
-export const API = axios.create({ baseURL: baseUrl });
+export const API_ADMIN = axios.create({ baseURL: baseUrl });
+
+export const API_USER = axios.create({ baseURL: baseUrl });
 
 export const adminLogout = (navigate: NavigateFunction) => {
     localStorage.setItem('adminAuth', '');
     navigate('/admin/adminLogin');
+}
+
+export const userLogout = (navigate: NavigateFunction) => {
+    localStorage.setItem('userAuth', '');
+    navigate('/login');
 }

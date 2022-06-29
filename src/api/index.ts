@@ -1,14 +1,26 @@
 import { AxiosRequestConfig, AxiosResponse } from "axios";
-import { API } from "../utils";
+import { API_ADMIN, API_USER } from "../utils";
 
-API.interceptors.request.use((req: AxiosRequestConfig) => {
-    const savedToken = localStorage.getItem('adminAuth');
-    if (savedToken && req && req.headers) {
-        req.headers.Authorization = savedToken;
+API_ADMIN.interceptors.request.use((req: AxiosRequestConfig) => {
+    const savedTokenAdmin = localStorage.getItem('adminAuth');
+    if (savedTokenAdmin && req && req.headers) {
+        req.headers.Authorization = savedTokenAdmin;
     }
     return req;
 });
 
-export const graphqlApiPost = (GraphqlRoute: string, validateRequestBody: { query: string }): Promise<AxiosResponse> => {
-    return API.post(GraphqlRoute, validateRequestBody);
+API_USER.interceptors.request.use((req: AxiosRequestConfig) => {
+    const savedTokenUser = localStorage.getItem('userAuth');
+    if (savedTokenUser && req && req.headers) {
+        req.headers.Authorization = savedTokenUser;
+    }
+    return req;
+});
+
+export const graphqlApiPostAdmin = (GraphqlRoute: string, validateRequestBody: { query: string }): Promise<AxiosResponse> => {
+    return API_ADMIN.post(GraphqlRoute, validateRequestBody);
+}
+
+export const graphqlApiPostUser = (GraphqlRoute: string, validateRequestBody: { query: string }): Promise<AxiosResponse> => {
+    return API_USER.post(GraphqlRoute, validateRequestBody);
 }

@@ -89,16 +89,6 @@ function AdminLogin() {
 
       <div className='h-full min-h-[calc(100vh-4rem)] flex justify-center items-center'>
 
-        <LoadingOverlay visible={visible} />
-
-        <Modal
-          opened={modalOpened}
-          onClose={() => setModalOpened(false)}
-          title="Login alert"
-        >
-          <span className='text-lg font-bold text-red-500'>{modalTitle}</span>
-        </Modal>
-
         <form onSubmit={submitLogin}>
 
           <div className='flex flex-col mx-20 justify-center p-4 items-center border-[1px] border-slate-400 rounded-lg'>
@@ -122,6 +112,16 @@ function AdminLogin() {
         </form>
 
       </div>
+
+      <LoadingOverlay visible={visible} />
+
+      <Modal
+        opened={modalOpened}
+        onClose={() => setModalOpened(false)}
+        title="Login alert"
+      >
+        <span className='text-lg font-bold text-red-500'>{modalTitle}</span>
+      </Modal>
 
     </>
   )

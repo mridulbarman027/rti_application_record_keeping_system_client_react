@@ -79,8 +79,6 @@ function Signup() {
       const result = res.data;
       const userData = result as { userSignup: { 'status': string } };
       const errors = result.errors;
-      console.log(result);
-      console.log(userData);
       if (userData && !errors) {
         showNotification({
           title: 'Signup Successfull',
