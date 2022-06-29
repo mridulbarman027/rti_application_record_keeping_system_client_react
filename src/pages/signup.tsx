@@ -83,6 +83,7 @@ function Signup() {
         showNotification({
           title: 'Signup Successfull',
           message: 'User created successfully. Now you can login',
+          autoClose: 2000,
         })
         navigate('./login');
       } else {

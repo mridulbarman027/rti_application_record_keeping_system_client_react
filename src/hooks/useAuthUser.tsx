@@ -5,10 +5,12 @@ import { userLogout } from "../utils";
 
 export const useAuthUser = (GraphqlRoute: string, navigate: NavigateFunction) => {
 
+  const savedToken = localStorage.getItem('userAuth');
+
   const validateRequestBody = {
     query: `
       query {
-        userVerifyToken(userId: "") {
+        userVerifyToken(token: "${savedToken}") {
           isVerified
         }
       }
@@ -16,7 +18,6 @@ export const useAuthUser = (GraphqlRoute: string, navigate: NavigateFunction) =>
   }
 
   useEffect(() => {
-    const savedToken = localStorage.getItem('userAuth');
 
     if (savedToken && savedToken.length > 2) {
 
