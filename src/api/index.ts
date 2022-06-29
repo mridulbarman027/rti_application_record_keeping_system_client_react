@@ -9,6 +9,6 @@ API.interceptors.request.use((req: AxiosRequestConfig) => {
     return req;
 });
 
-export const adminVerifyToken = (GraphqlRoute: string, validateRequestBody: { query: string }): Promise<AxiosResponse> => {
+export const graphqlApiPost = (GraphqlRoute: string, validateRequestBody: { query: string }): Promise<AxiosResponse> => {
     return API.post(GraphqlRoute, validateRequestBody);
 }

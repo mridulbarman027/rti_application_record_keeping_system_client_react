@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { adminVerifyToken } from '../../../api';
+import { graphqlApiPost } from '../../../api';
 import AdminNavbar from '../../../components/Common/Navbar/AdminNavbar';
 import { adminLogout, GraphqlRoute } from '../../../utils';
 
@@ -22,7 +22,7 @@ function Applications() {
     const savedToken = localStorage.getItem('adminAuth');
     if (savedToken && savedToken.length > 2) {
 
-      adminVerifyToken(GraphqlRoute, validateRequestBody).then((res) => {
+      graphqlApiPost(GraphqlRoute, validateRequestBody).then((res) => {
         const validatorData = res.data.data;
         const isVerified = validatorData.adminVerifyToken.isVerified;
         if (!validatorData || !isVerified) {
@@ -36,8 +36,6 @@ function Applications() {
       adminLogout(navigate);
     }
   }, []);
-
-
 
   return (
     <>
