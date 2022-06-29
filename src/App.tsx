@@ -20,6 +20,7 @@ function App() {
               <Route path='login' element={<Login />} />
               <Route path='signup' element={<Signup />} />
               <Route path='admin' element={<AdminIndex />}>
+                <Route index element={<AdminLogin />} />
                 <Route path='adminLogin' element={<AdminLogin />} />
                 <Route path='adminApplications' element={<Applications />} />
                 <Route path='adminApplications/:applicationId' element={<ApplicationView />} />
