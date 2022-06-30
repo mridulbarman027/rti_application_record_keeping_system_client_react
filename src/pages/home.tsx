@@ -1,6 +1,5 @@
-import { Button } from '@mantine/core';
 import { Link, useNavigate } from 'react-router-dom';
-import HomeNavBar from '../components/Common/Navbar/NavBar';
+import NavBar from '../components/Common/Navbar/NavBar';
 import Card from '../components/Home/Card';
 import { useAuthUser } from '../hooks';
 import { GraphqlRoute } from '../utils';
@@ -13,7 +12,7 @@ const Home = () => {
 
   return (
     <>
-      <HomeNavBar />
+      <NavBar />
 
       <div className='h-full min-h-[calc(100vh-4rem)] flex flex-col justify-start items-center'>
 
