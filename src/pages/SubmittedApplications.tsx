@@ -1,6 +1,6 @@
 import React from 'react'
 
-function SubmittedApplications() {
+const SubmittedApplications = () => {
   return (
     <div>SubmittedApplications</div>
   )

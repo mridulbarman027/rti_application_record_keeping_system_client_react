@@ -1,6 +1,6 @@
 import React from 'react'
 
-function NewApplication() {
+const NewApplication = () => {
   return (
     <div>NewApplication</div>
   )

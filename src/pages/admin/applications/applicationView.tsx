@@ -2,7 +2,7 @@ import React from 'react'
 import { useParams } from 'react-router-dom'
 import AdminNavbar from '../../../components/Common/Navbar/Admin/AdminNavbar'
 
-function ApplicationView() {
+const ApplicationView = () => {
 
   const params = useParams();
   const applicationId = params.applicationId;

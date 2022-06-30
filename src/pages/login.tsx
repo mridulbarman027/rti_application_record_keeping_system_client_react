@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import LoginSignupNavbar from '../components/Common/Navbar/LoginSignupNavbar';
 import { GraphqlApi } from '../utils';
 
-function Login() {
+const Login = () => {
 
   const [visible, setVisible] = useState(false);
 

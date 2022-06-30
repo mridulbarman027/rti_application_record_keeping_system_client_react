@@ -4,7 +4,7 @@ import { graphqlApiPostAdmin } from '../../../api';
 import AdminNavbar from '../../../components/Common/Navbar/Admin/AdminNavbar';
 import { adminLogout, GraphqlRoute } from '../../../utils';
 
-function Applications() {
+const Applications = () => {
 
   const navigate = useNavigate();
 

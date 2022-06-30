@@ -1,6 +1,6 @@
 import React from 'react'
 
-function ViewReplies() {
+const ViewReplies = () => {
   return (
     <div>ViewReplies</div>
   )

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom';
 
-function AdminIndex() {
+const AdminIndex = () => {
   return (
     <>
       <Outlet />
