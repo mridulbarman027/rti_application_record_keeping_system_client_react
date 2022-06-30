@@ -1,14 +1,20 @@
+import React from "react"
 
-const Card = (cardValue: { title: string, desc: string }) => {
+interface Props {
+  title: string;
+  desc: string;
+}
+
+const Card: React.FC<Props> = ({ title, desc }) => {
   return (
-    <div className='flex mx-20 items-center flex-col justify-center border-[1px] p-4 shadow-sm cursor-pointer hover:bg-slate-100'>
+    <div className='flex mx-20 w-96 items-center flex-col justify-center border-[1px] p-4 shadow-sm cursor-pointer hover:bg-slate-100'>
 
       <div className="font-semibold text-lg">
-        {cardValue.title}
+        {title}
       </div>
 
       <div className="font-thin text-sm">
-        {cardValue.desc}
+        {desc}
       </div>
 
     </div>
