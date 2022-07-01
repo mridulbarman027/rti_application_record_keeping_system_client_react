@@ -1,9 +1,43 @@
-import { Box, Button, Group, Indicator, NumberInput, Select, TextInput } from '@mantine/core';
+import { Box, Button, Group, Select, TextInput } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
-import React from 'react'
+import { useForm } from '@mantine/form';
+import { useEffect, useState } from 'react';
+import { graphqlApiPostUser } from '../api';
 import NavBar from '../components/Common/Navbar/NavBar';
+import { GraphqlRoute } from '../utils';
 
 const NewApplication = () => {
+
+  const userId = localStorage.getItem('userId');
+  const userInfoRequestBody = {
+    query: `
+      query {
+        userInfo(user_id: "${userId}") {
+          user_name
+        }
+      }
+    `
+  }
+
+  useEffect(() => {
+    graphqlApiPostUser(GraphqlRoute, userInfoRequestBody).then((res) => {
+      const result = res.data.data.userInfo;
+      const name = result.user_name;
+      form.setFieldValue('name', name);
+    }).catch((error) => {
+      console.log(error);
+    });
+  }, []);
+
+  const form = useForm<{ name: string; topic: string; date: Date; payment: string; ref: string | undefined}>({
+    initialValues: { name: '', topic: '', date: new Date(), payment: '', ref: '' },
+    validate: (values) => ({
+      name: values.name.length < 2 ? 'Invalid Name' : null,
+      topic: values.topic.length < 2 ? 'Invalid Topic' : null,
+      payment: values.payment.length < 2 ? 'Please select payment type' : null,
+    }),
+  });
+
   return (
     <>
       <NavBar />
@@ -13,18 +47,10 @@ const NewApplication = () => {
         <h1 className='mt-8 font-bold text-[28px]'>Create new application</h1>
 
         <Box sx={{ maxWidth: 640, width: 450 }} mx="auto" className='mt-8'>
-          {/* <form onSubmit={form.onSubmit((values) => console.log(values))}>
-            <TextInput label="Name" placeholder="Name" {...form.getInputProps('name')} />
-            <NumberInput mt="sm" label="Age" placeholder="You age" {...form.getInputProps('age')} />
+          <form onSubmit={form.onSubmit((values) => console.log(values))}>
+            <TextInput mt="sm" label="Applicant Name" placeholder="Applicant Name" {...form.getInputProps('name')}/>
 
-            <Group position="right" mt="md">
-              <Button type="submit">Submit</Button>
-            </Group>
-          </form> */}
-          <form >
-            <TextInput mt="sm" label="Applicant Name" placeholder="Applicant Name" />
-
-            <TextInput mt="sm" label="Application Topic" placeholder="Application Topic" />
+            <TextInput mt="sm" label="Application Topic" placeholder="Application Topic" {...form.getInputProps('topic')}/>
 
             <DatePicker
               mt="sm"
@@ -33,14 +59,13 @@ const NewApplication = () => {
               renderDay={(date) => {
                 const day = date.getDate();
                 return (
-                  <Indicator size={6} color="red" offset={8} disabled={day !== 16}>
-                    <div>{day}</div>
-                  </Indicator>
+                  <div>{day}</div>
                 );
               }}
+              {...form.getInputProps('date')}
             />
 
-            <div className='mt-3 flex justify-between items-center'>
+            <div className='mt-3 flex justify-between items-start'>
               <div className='flex justify-center items-center h-full'>
                 <Select
                   label="Payment Type"
@@ -50,13 +75,13 @@ const NewApplication = () => {
                     { value: 'bank_transfer', label: 'Bank Transfer' },
                     { value: 'cheque', label: 'Cheque' },
                     { value: 'online_payment', label: 'Online Payment' },
-                    { value: 'tresary_challan', label: 'Tesary Challan' },
-                    { value: 'online_payment', label: 'Online Payment' }
+                    { value: 'tresary_challan', label: 'Tesary Challan' }
                   ]}
+                  {...form.getInputProps('payment')}
                 />
               </div>
               <div className='flex justify-center items-center h-full '>
-                <TextInput label="Payment Ref No" placeholder="Payment Ref No" />
+                <TextInput label="Payment Ref No" placeholder="Payment Ref No" {...form.getInputProps('ref')}/>
               </div>
             </div>
 
