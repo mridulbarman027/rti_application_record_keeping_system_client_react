@@ -119,13 +119,13 @@ const Login = () => {
 
       <LoadingOverlay visible={visible} />
 
-        <Modal
-          opened={modalOpened}
-          onClose={() => setModalOpened(false)}
-          title="Login alert"
-        >
-          <span className='text-lg font-bold text-red-500'>{modalTitle}</span>
-        </Modal>
+      <Modal
+        opened={modalOpened}
+        onClose={() => setModalOpened(false)}
+        title="Login alert"
+      >
+        <span className='text-lg font-bold text-red-500'>{modalTitle}</span>
+      </Modal>
 
     </>
   )

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { graphqlApiPostAdmin } from '../../../api';
+import { graphqlApiAdmin } from '../../../api';
 import AdminNavbar from '../../../components/Common/Navbar/Admin/AdminNavbar';
 import { adminLogout, GraphqlRoute } from '../../../utils';
 
@@ -22,7 +22,7 @@ const Applications = () => {
     const savedToken = localStorage.getItem('adminAuth');
     if (savedToken && savedToken.length > 2) {
 
-      graphqlApiPostAdmin(GraphqlRoute, validateRequestBody).then((res) => {
+      graphqlApiAdmin(GraphqlRoute, validateRequestBody).then((res) => {
         const validatorData = res.data.data;
         const isVerified = validatorData.adminVerifyToken.isVerified;
         if (!validatorData || !isVerified) {

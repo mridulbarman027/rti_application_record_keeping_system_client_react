@@ -1,14 +1,30 @@
-import { Box, Button, Group, Select, TextInput } from '@mantine/core';
+import { Box, Button, Group, LoadingOverlay, Select, TextInput } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { useForm } from '@mantine/form';
+import { showNotification } from '@mantine/notifications';
+import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { graphqlApiPostUser } from '../api';
+import { useNavigate } from 'react-router-dom';
+import { graphqlApiUser } from '../api';
 import NavBar from '../components/Common/Navbar/NavBar';
-import { GraphqlRoute } from '../utils';
+import { GraphqlApi, GraphqlRoute } from '../utils';
+
+interface IApplicationFormValues {
+  name: string; 
+  topic: string;
+  date: Date;
+  payment: string;
+  ref: string | undefined
+}
 
 const NewApplication = () => {
 
+  const [loading, setLoading] = useState(false);
+
   const userId = localStorage.getItem('userId');
+
+  const navigate = useNavigate();
+
   const userInfoRequestBody = {
     query: `
       query {
@@ -20,7 +36,7 @@ const NewApplication = () => {
   }
 
   useEffect(() => {
-    graphqlApiPostUser(GraphqlRoute, userInfoRequestBody).then((res) => {
+    graphqlApiUser(GraphqlRoute, userInfoRequestBody).then((res) => {
       const result = res.data.data.userInfo;
       const name = result.user_name;
       form.setFieldValue('name', name);
@@ -38,7 +54,59 @@ const NewApplication = () => {
     }),
   });
 
+  const submitApplicationForm = (values: IApplicationFormValues) => {
+    setLoading(true);
+
+    const applicaitonRequestBody = {
+      query: `
+        mutation {
+          createApplication(applicationData: {
+            userid: "${userId}",
+            applicant_name: "${values.name}",
+            application_date: "${values.date}",
+            mode_of_payment: "${values.payment}",
+            payment_ref_no: "${values.ref}"
+            application_topic: "${values.topic}"
+          }) {
+            submitted
+          }
+        }
+      `
+    }
+
+    axios.post(GraphqlApi, applicaitonRequestBody).then((res) => {
+      setLoading(false);
+
+      const result = res.data;
+      const applicaitonData = result as { createApplication: { 'submitted': boolean } };
+      const errors = result.errors;
+      if (applicaitonData && !errors) {
+        showNotification({
+          title: 'Application Submitted',
+          message: 'Application submitted successfully. Keep checking the replies.',
+          autoClose: 2000,
+        });
+        navigate('/');
+      } else {
+        showNotification({
+          title: 'Error submitting the applicaiton',
+          message: 'Something went wrong',
+          autoClose: 2000,
+        });
+      }
+    }).catch(error => {
+      setLoading(false);
+      showNotification({
+        title: 'Error submitting the applicaiton',
+        message: 'Something went wrong',
+        autoClose: 2000,
+      });
+    });
+
+  }
+
   return (
+    
     <>
       <NavBar />
 
@@ -47,7 +115,9 @@ const NewApplication = () => {
         <h1 className='mt-8 font-bold text-[28px]'>Create new application</h1>
 
         <Box sx={{ maxWidth: 640, width: 450 }} mx="auto" className='mt-8'>
-          <form onSubmit={form.onSubmit((values) => console.log(values))}>
+
+          <form onSubmit={form.onSubmit((values) => submitApplicationForm(values))}>
+
             <TextInput mt="sm" label="Applicant Name" placeholder="Applicant Name" {...form.getInputProps('name')}/>
 
             <TextInput mt="sm" label="Application Topic" placeholder="Application Topic" {...form.getInputProps('topic')}/>
@@ -88,10 +158,15 @@ const NewApplication = () => {
             <Group position="right" mt="md">
               <Button type="submit" className='bg-blue-600'>Submit</Button>
             </Group>
+
           </form>
+
         </Box>
 
       </div>
+
+      <LoadingOverlay visible={loading} />
+      
     </>
   )
 }

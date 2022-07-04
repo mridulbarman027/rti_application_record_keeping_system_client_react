@@ -17,10 +17,10 @@ API_USER.interceptors.request.use((req: AxiosRequestConfig) => {
     return req;
 });
 
-export const graphqlApiPostAdmin = (GraphqlRoute: string, validateRequestBody: { query: string }): Promise<AxiosResponse> => {
+export const graphqlApiAdmin = (GraphqlRoute: string, validateRequestBody: { query: string }): Promise<AxiosResponse> => {
     return API_ADMIN.post(GraphqlRoute, validateRequestBody);
 }
 
-export const graphqlApiPostUser = (GraphqlRoute: string, validateRequestBody: { query: string }): Promise<AxiosResponse> => {
+export const graphqlApiUser = (GraphqlRoute: string, validateRequestBody: { query: string }): Promise<AxiosResponse> => {
     return API_USER.post(GraphqlRoute, validateRequestBody);
 }

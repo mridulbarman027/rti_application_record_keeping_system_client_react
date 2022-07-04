@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { NavigateFunction } from "react-router-dom";
-import { graphqlApiPostUser } from "../api";
+import { graphqlApiUser } from "../api";
 import { userLogout } from "../utils";
 
 export const useAuthUser = (GraphqlRoute: string, navigate: NavigateFunction) => {
@@ -21,7 +21,7 @@ export const useAuthUser = (GraphqlRoute: string, navigate: NavigateFunction) =>
 
     if (savedToken && savedToken.length > 2) {
 
-      graphqlApiPostUser(GraphqlRoute, validateRequestBody).then((res) => {
+      graphqlApiUser(GraphqlRoute, validateRequestBody).then((res) => {
         const validatorData = res.data.data;
         const isVerified = validatorData.userVerifyToken.isVerified;
         if (!validatorData || !isVerified) {
