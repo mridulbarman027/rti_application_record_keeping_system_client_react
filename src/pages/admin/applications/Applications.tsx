@@ -6,6 +6,7 @@ import { GraphqlRoute } from '../../../utils';
 import { BsSearch } from "react-icons/bs";
 import { DateRangePicker } from '@mantine/dates';
 import { useState } from 'react';
+import ApplicationListCardItem from '../../../components/Common/Cards/ApplicationListCardItem';
 
 const Applications = () => {
 
@@ -13,9 +14,13 @@ const Applications = () => {
 
   useAuthAdmin(GraphqlRoute, navigate);
 
+  /* const date = new Date(), y = date.getFullYear(), m = date.getMonth();
+  const firstDay = new Date(y, m, 1);
+  const lastDay = new Date(y, m + 1, 0); */
+
   const [value, setValue] = useState<[Date | null, Date | null]>([
-    new Date(),
-    new Date(),
+    null,
+    null,
   ]);
 
   return (
@@ -36,8 +41,9 @@ const Applications = () => {
           <div className='mt-6 flex justify-between items-center'>
             <span className='font-semibold'>Date:</span>
 
-            <Chips color="violet" variant="filled" spacing="md" size='md'>
-              <Chip value="application" defaultChecked>Application Date</Chip>
+            <Chips color="violet" variant="filled" spacing="md" size='md' defaultValue={'all'}>
+              <Chip value="all">All</Chip>
+              <Chip value="application">Application Date</Chip>
               <Chip value="reply">Reply Date</Chip>
             </Chips>
 
@@ -54,24 +60,7 @@ const Applications = () => {
 
             <div className='w-full flex flex-col mt-4'>
 
-              <a>
-                <div className='border-b-[1px] w-full flex bg-slate-100 cursor-pointer hover:bg-slate-200'>
-
-                  <div className='w-full flex flex-col p-3'>
-
-                    <div className='font-semibold text-lg'>Applicant Name</div>
-
-                    <div className='font-normal text-base text-gray-500'>Applicaiton Topic</div>
-
-                  </div>
-
-                  <div className='flex flex-col items-center justify-center p-3'>
-                    <div className='font-light text-sm w-full text-right'>22-April</div>
-                    <div className='font-normal text-white bg-blue-600 rounded-lg px-2 pt-[1px] pb-[2px] mt-2 text-xs w-full text-right whitespace-nowrap'>New Reply</div>
-                  </div>
-
-                </div>
-              </a>
+              <ApplicationListCardItem />
 
             </div>
 

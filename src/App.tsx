@@ -9,7 +9,6 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import NewApplication from './pages/NewApplication';
 import Signup from './pages/Signup';
-import SubmittedApplications from './pages/SubmittedApplications';
 import ViewReplies from './pages/ViewReplies';
 
 function App() {
@@ -23,8 +22,7 @@ function App() {
               <Route path='login' element={<Login />} />
               <Route path='signup' element={<Signup />} />
               <Route path='new' element={<NewApplication />} />
-              <Route path='submission' element={<SubmittedApplications />} />
-              <Route path='replies' element={<ViewReplies />} />
+              <Route path='replies/:applicationId' element={<ViewReplies />} />
               <Route path='admin' element={<AdminIndex />}>
                 <Route index element={<AdminLogin />} />
                 <Route path='adminLogin' element={<AdminLogin />} />
