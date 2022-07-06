@@ -43,6 +43,7 @@ const AdminLogin = () => {
         query {
           adminLogin(username: "${username}", password: "${password}") {
             adminId
+            adminType
             token
             tokenExpiration
           }
@@ -60,8 +61,10 @@ const AdminLogin = () => {
       const loginData = res.data.data.adminLogin;
       const adminId = loginData.adminId;
       const token = loginData.token;
+      const adminType = loginData.adminType;
       localStorage.setItem('adminId', adminId);
       localStorage.setItem('adminAuth', token);
+      localStorage.setItem('adminType', adminType);
 
       navigate('/admin/adminApplications');
 
