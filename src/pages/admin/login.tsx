@@ -99,8 +99,11 @@ const AdminLogin = () => {
             <div className='font-semibold text-lg text-blue-600 mb-4'>Admin Login</div>
 
             <div className='w-full flex mb-4'>
+
               <div className='w-24 text-left flex items-center'>Username: </div>
+              
               <input type='text' maxLength={40} name='username' className='w-60 p-1 border-[1px] text-base ml-2' />
+              
             </div>
 
             <div className='w-full flex mb-4'>
@@ -123,7 +126,7 @@ const AdminLogin = () => {
         onClose={() => setModalOpened(false)}
         title="Login alert"
       >
-        <span className='text-lg font-bold text-red-500'>{modalTitle}</span>
+        <span className='text-lg font-bold text-red-500'>{ modalTitle }</span>
       </Modal>
 
     </>
