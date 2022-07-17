@@ -28,12 +28,12 @@ function getIconColor(status: DropzoneStatus, theme: MantineTheme) {
   }
   
   export const dropzoneChildren = (status: DropzoneStatus, theme: MantineTheme) => (
-    <Group position="center" spacing="xl" style={{ minHeight: 220, pointerEvents: 'none' }}>
+    <Group position="center" spacing="xl" style={{ minHeight: 80, pointerEvents: 'none' }}>
       <ImageUploadIcon status={status} style={{ color: getIconColor(status, theme) }} size={80} />
   
       <div>
         <Text size="xl" inline>
-          Drag or select images or pdf
+          Drag or select image or pdf
         </Text>
         <Text size="sm" color="dimmed" inline mt={7}>
           Attach as image or pdf files for sending rti reply

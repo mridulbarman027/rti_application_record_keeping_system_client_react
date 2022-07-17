@@ -70,6 +70,18 @@ const ApplicationView = () => {
               <button className='my-8 w-full border-[1] font-semibold px-6 pt-[8px] pb-[10px] bg-blue-500 text-white rounded-lg hover:bg-blue-700'>Send Reply</button>
             </Link>
 
+            <div className='flex justify-between items-center my-8'>
+
+            <Link to={`/`}>
+              <button className='w-full border-[1] font-semibold px-6 pt-[8px] pb-[10px] bg-blue-500 text-white rounded-lg hover:bg-blue-700'>Transfer to Appellate Authority</button>
+            </Link>
+
+            <Link to={`/`}>
+              <button className=' w-full border-[1] font-semibold px-6 pt-[8px] pb-[10px] bg-blue-500 text-white rounded-lg hover:bg-blue-700'>Transfer to 3rd Party</button>
+            </Link>
+
+            </div>
+
           </div>
 
         </div>
