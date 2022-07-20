@@ -1,10 +1,19 @@
-import { Modal, useMantineTheme } from '@mantine/core';
+import { Box, Button, Group, Modal, Textarea, TextInput, useMantineTheme } from '@mantine/core';
+import { DatePicker } from '@mantine/dates';
 import { Dropzone } from '@mantine/dropzone';
+import { useForm } from '@mantine/form';
 import { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom'
 import ReplyListCardItem from '../../../components/Common/Cards/ReplyListCardItem';
 import { dropzoneChildren } from '../../../components/Common/FileInputs/DropzoneContent';
 import AdminNavbar from '../../../components/Common/Navbar/Admin/AdminNavbar'
+
+interface ITransferFormValues {
+  name: string;
+  date: Date;
+  organization: string;
+  matter_details: string;
+}
 
 const ApplicationView = () => {
 
@@ -13,15 +22,76 @@ const ApplicationView = () => {
 
   const [transferModalOpened, setTransferModalOpened] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const [loading, setLoading] = useState(false);
 
   const theme = useMantineTheme();
 
   useEffect(() => {
     setTimeout(() => {
-      bottomRef.current?.scrollIntoView({behavior: 'smooth'});
+      bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, 1000);
   }, []);
-  
+
+  const transferForm = useForm<{ name: string; date: Date; organization: string; matter_details: string }>({
+    initialValues: { name: '', date: new Date(), organization: '', matter_details: '' },
+    validate: (values) => ({
+      name: values.name.length < 2 ? 'Invalid Name' : null,
+      date: !values.date ? 'Invalid Date': null,
+      orginzation: values.organization.length < 2 ? 'Invalid Orginization' : null,
+      matter_details: values.matter_details.length < 2 ? 'Matter Details Cannot be empty' : null,
+    }),
+  });
+
+  const submitTransferForm = (values: ITransferFormValues) => {
+    setLoading(true);
+
+    const applicaitonRequestBody = {
+      /* query: `
+        mutation {
+          createApplication(applicationData: {
+            userid: "${userId}",
+            applicant_name: "${values.name}",
+            application_date: "${values.date}",
+            mode_of_payment: "${values.payment}",
+            payment_ref_no: "${values.ref}"
+            application_topic: "${values.topic}"
+          }) {
+            submitted
+          }
+        }
+      ` */
+    }
+
+    /* axios.post(GraphqlApi, applicaitonRequestBody).then((res) => {
+      setLoading(false);
+
+      const result = res.data;
+      const applicaitonData = result as { createApplication: { 'submitted': boolean } };
+      const errors = result.errors;
+      if (applicaitonData && !errors) {
+        showNotification({
+          title: 'Application Submitted',
+          message: 'Application submitted successfully. Keep checking the replies.',
+          autoClose: 2000,
+        });
+        navigate('/');
+      } else {
+        showNotification({
+          title: 'Error submitting the applicaiton',
+          message: 'Something went wrong',
+          autoClose: 2000,
+        });
+      }
+    }).catch(error => {
+      setLoading(false);
+      showNotification({
+        title: 'Error submitting the applicaiton',
+        message: 'Something went wrong',
+        autoClose: 2000,
+      });
+    }); */
+
+  }
 
   return (
     <>
@@ -100,11 +170,44 @@ const ApplicationView = () => {
       </div>
 
       <Modal
+        centered
         opened={transferModalOpened}
         onClose={() => setTransferModalOpened(false)}
-        title="Introduce yourself!"
+        title="Fill the form"
+        size="lg"
       >
-        {/* Modal content */}
+
+        <Box sx={{ maxWidth: 640, width: 450 }} mx="auto">
+
+          <form onSubmit={transferForm.onSubmit((values) => submitTransferForm(values))}>
+
+            <TextInput mt="sm" label="Party Name" placeholder="Applicant Name" {...transferForm.getInputProps('name')} />
+
+            <DatePicker
+              mt="sm"
+              placeholder="Pick date"
+              label="Date"
+              renderDay={(date) => {
+                const day = date.getDate();
+                return (
+                  <div>{day}</div>
+                );
+              }}
+              {...transferForm.getInputProps('date')}
+            />
+
+            <TextInput mt="sm" label="Orginization" placeholder="Orginization" {...transferForm.getInputProps('organization')} />
+
+            <Textarea mt="sm" label="Matter Detail" placeholder="Matter Detail" {...transferForm.getInputProps('matter_details')} />
+
+            <Group position="right" mt="md">
+              <Button type="submit" className='bg-blue-600'>Submit</Button>
+            </Group>
+
+          </form>
+
+        </Box>
+
       </Modal>
 
     </>
