@@ -2,12 +2,11 @@ import { Box, Button, Group, LoadingOverlay, Select, TextInput } from '@mantine/
 import { DatePicker } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { graphqlApiUser } from '../api';
 import NavBar from '../components/Common/Navbar/NavBar';
-import { GraphqlApi, GraphqlRoute } from '../utils';
+import { GraphqlRoute } from '../utils';
 
 interface IApplicationFormValues {
   name: string; 
@@ -74,7 +73,7 @@ const NewApplication = () => {
       `
     }
 
-    axios.post(GraphqlApi, applicaitonRequestBody).then((res) => {
+    graphqlApiUser(GraphqlRoute, applicaitonRequestBody).then((res) => {
       setLoading(false);
 
       const result = res.data;

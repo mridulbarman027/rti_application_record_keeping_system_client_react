@@ -3,7 +3,7 @@ import { NavigateFunction } from 'react-router-dom';
 import { graphqlApiAdmin } from '../api';
 import { adminLogout } from '../utils';
 
-const useAuthAdmin = (GraphqlRoute: string, navigate: NavigateFunction) => {
+export const useAuthAdmin = (GraphqlRoute: string, navigate: NavigateFunction) => {
     const savedToken = localStorage.getItem('adminAuth');
 
     const validateRequestBody = {

@@ -60,7 +60,7 @@ const Applications = () => {
 
             <div className='w-full flex flex-col mt-4'>
 
-              <ApplicationListCardItem />
+              {/* <ApplicationListCardItem /> */}
 
             </div>
 
