@@ -28,7 +28,7 @@ const ApplicationListCardItem: React.FC<ApplicationItemProp> = (props) => {
                         ) : null
                     }</div>
                     {
-                        props.applicationProp.reply_viewed ? (
+                        !props.applicationProp.reply_viewed ? (
                             <div className='font-normal text-white bg-blue-600 rounded-lg px-2 pt-[1px] pb-[2px] mt-2 text-xs text-right whitespace-nowrap'>New Reply</div>
                         ) : null
                     }
