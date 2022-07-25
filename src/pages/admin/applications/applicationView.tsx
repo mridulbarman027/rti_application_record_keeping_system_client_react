@@ -3,10 +3,14 @@ import { DatePicker } from '@mantine/dates';
 import { Dropzone } from '@mantine/dropzone';
 import { useForm } from '@mantine/form';
 import { useEffect, useRef, useState } from 'react';
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { IApplicationListItem } from '../../../@types';
+import { graphqlApiAdmin } from '../../../api';
 import ReplyListCardItem from '../../../components/Common/Cards/ReplyListCardItem';
 import { dropzoneChildren } from '../../../components/Common/FileInputs/DropzoneContent';
 import AdminNavbar from '../../../components/Common/Navbar/Admin/AdminNavbar'
+import { useAuthAdmin } from '../../../hooks';
+import { GraphqlRoute } from '../../../utils';
 
 interface ITransferFormValues {
   name: string;
@@ -20,9 +24,68 @@ const ApplicationView = () => {
   const params = useParams();
   const applicationId = params.applicationId;
 
+
+  const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(true);
+  const [applicationData, setApplicationData] = useState<IApplicationListItem>();
+
+  useAuthAdmin(GraphqlRoute, navigate);
+
+  const requestApplicationBody = {
+    query: `
+      query {
+        getApplicationById(applicationId: "${applicationId}") {
+          id
+          userid
+          applicant_name
+          application_date
+          mode_of_payment
+          payment_ref_no
+          application_topic
+          application_time
+          application_admin
+          application_closed
+          reply_viewed
+          replies {
+            id
+          }
+        }
+      }
+    `
+  }
+
+  /* const requestUpdateReply = {
+    query: `
+      mutation {
+        updateReplyView(applicationId: "${applicationId}") {
+          submitted
+        }
+      }
+    `
+  }; */
+
+  useEffect(() => {
+    graphqlApiAdmin(GraphqlRoute, requestApplicationBody).then((res) => {
+      setLoading(false);
+      const { data: { data: { getApplicationById } } } = res;
+      setApplicationData(getApplicationById);
+    }).catch(error => {
+      console.log(error);
+    });
+
+    /* graphqlApiUser(GraphqlRoute, requestUpdateReply).then((res) => {
+    }).catch(error => {
+      console.log(error);
+    }); */
+  }, []);
+
+
+  //////////////////////////////////////////////////
+
+
   const [transferModalOpened, setTransferModalOpened] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
-  const [loading, setLoading] = useState(false);
 
   const theme = useMantineTheme();
 
@@ -109,19 +172,19 @@ const ApplicationView = () => {
               <span className='text-xl font-semibold border-b-[1px] pb-3'>Applications Details</span>
 
               <div className='w-full flex justify-between items-center mt-1'>
-                <div className='font-medium text-lg'>Applicant Name</div>
-                <div className='font-semibold text-lg'>Mridul Barman</div>
-              </div>
+                  <div className='font-medium text-lg'>Applicant Name</div>
+                  <div className='font-semibold text-lg'>{ applicationData?.applicant_name }</div>
+                </div>
 
-              <div className='w-full flex justify-between items-center mt-1'>
-                <div className='font-medium text-lg'>Application Topic</div>
-                <div className='font-semibold text-lg'>RTI</div>
-              </div>
+                <div className='w-full flex justify-between items-center mt-1'>
+                  <div className='font-medium text-lg'>Application Topic</div>
+                  <div className='font-semibold text-lg'>{ applicationData?.application_topic }</div>
+                </div>
 
-              <div className='w-full flex justify-between items-center mt-1'>
-                <div className='font-medium text-lg'>Applicant Name</div>
-                <div className='font-semibold text-lg'>Mridul Barman</div>
-              </div>
+                <div className='w-full flex justify-between items-center mt-1'>
+                  <div className='font-medium text-lg'>Application Date</div>
+                  <div className='font-semibold text-lg'>{ new Date(parseInt(applicationData?.application_date+ "")).toLocaleDateString() }</div>
+                </div>
 
               <span className='text-xl font-semibold border-b-[1px] mt-8 pb-3'>Applications Replies</span>
 
