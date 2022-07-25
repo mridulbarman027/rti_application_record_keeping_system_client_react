@@ -5,7 +5,7 @@ import useAuthAdmin from '../../../hooks/useAuthAdmin';
 import { GraphqlRoute } from '../../../utils';
 import { BsSearch } from "react-icons/bs";
 import { DateRangePicker } from '@mantine/dates';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ApplicationListCardItem from '../../../components/Common/Cards/ApplicationListCardItem';
 
 const Applications = () => {
@@ -22,6 +22,10 @@ const Applications = () => {
     null,
     null,
   ]);
+
+  useEffect(() => {
+    console.log(value);
+  }, [value]);
 
   return (
     <>

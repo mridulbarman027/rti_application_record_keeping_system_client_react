@@ -24,7 +24,7 @@ const ApplicationListCardItem: React.FC<ApplicationItemProp> = (props) => {
                 <div className='flex w-full flex-col items-end justify-center p-3'>
                     <div className='font-light text-sm w-full text-right'>{
                         date ? (
-                            new Date(date.toString()).toLocaleDateString()
+                            new Date(parseInt(date)).toLocaleDateString()
                         ) : null
                     }</div>
                     {
