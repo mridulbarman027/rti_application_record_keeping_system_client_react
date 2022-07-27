@@ -98,7 +98,7 @@ const ViewReplies = () => {
 
                 <div className='w-full flex justify-between items-center mt-1'>
                   <div className='font-medium text-lg'>Application Date</div>
-                  <div className='font-semibold text-lg'>{ new Date(applicationData?.application_date+ "").toLocaleDateString() }</div>
+                  <div className='font-semibold text-lg'>{ new Date(parseInt(applicationData?.application_date+ "")).toLocaleDateString() }</div>
                 </div>
 
                 <span className='text-xl font-semibold border-b-[1px] mt-8 pb-3'>Applications Replies</span>

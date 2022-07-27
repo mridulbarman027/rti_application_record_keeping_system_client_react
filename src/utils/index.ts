@@ -20,3 +20,19 @@ export const userLogout = (navigate: NavigateFunction) => {
     localStorage.setItem('userAuth', '');
     navigate('/login');
 }
+
+export const getBase64 = (file: File) => {
+    return new Promise(resolve => {
+      let fileInfo;
+      let baseURL: string = "";
+      let reader = new FileReader();
+
+      reader.readAsDataURL(file);
+
+      reader.onload = () => {
+        baseURL = reader.result as string;
+        resolve(baseURL);
+        return baseURL;
+      };
+    });
+  };

@@ -1,16 +1,16 @@
-import { Box, Button, Group, Modal, Textarea, TextInput, useMantineTheme } from '@mantine/core';
+import { Box, Button, Group, LoadingOverlay, Modal, Overlay, Textarea, TextInput, useMantineTheme } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { Dropzone } from '@mantine/dropzone';
 import { useForm } from '@mantine/form';
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { IApplicationListItem } from '../../../@types';
+import { IApplicationListItem, IReply } from '../../../@types';
 import { graphqlApiAdmin } from '../../../api';
 import ReplyListCardItem from '../../../components/Common/Cards/ReplyListCardItem';
 import { dropzoneChildren } from '../../../components/Common/FileInputs/DropzoneContent';
 import AdminNavbar from '../../../components/Common/Navbar/Admin/AdminNavbar'
 import { useAuthAdmin } from '../../../hooks';
-import { GraphqlRoute } from '../../../utils';
+import { getBase64, GraphqlRoute } from '../../../utils';
 
 interface ITransferFormValues {
   name: string;
@@ -24,11 +24,19 @@ const ApplicationView = () => {
   const params = useParams();
   const applicationId = params.applicationId;
 
+  const adminId = localStorage.getItem('adminId');
 
   const navigate = useNavigate();
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [selected, setSelected] = useState(false);
+  const [sendDisabled, setSendDisabled] = useState(true);
+  //const [replyTransferredOrClosed, setReplyTransferredOrClosed] = useState(true);
   const [applicationData, setApplicationData] = useState<IApplicationListItem>();
+  const [repliesData, setRepliesData] = useState<IReply[]>();
+
+  const [selectedFile, setSelectedFile] = useState("");
 
   useAuthAdmin(GraphqlRoute, navigate);
 
@@ -47,42 +55,95 @@ const ApplicationView = () => {
           application_admin
           application_closed
           reply_viewed
+          reply_3party
           replies {
             id
+            application_id
+            reply_time
+            reply_from_id
+            reply_from_name
+            reply_from
+            reply_file
           }
         }
       }
     `
   }
 
-  /* const requestUpdateReply = {
+  const replySendBody = {
     query: `
-      mutation {
-        updateReplyView(applicationId: "${applicationId}") {
-          submitted
+      mutation{
+        sendReply(
+          replyData: {
+            application_id: "${applicationId}",
+            reply_from: "1",
+            reply_from_id: "${adminId}",
+            reply_type: "first",
+            reply_file: "${selectedFile}",
+            reply_transfer: false
+          }
+        ) {
+          id
+          application_id
+          reply_time
+          reply_from_id
+          reply_from_name
+          reply_from
+          reply_file
         }
       }
     `
-  }; */
+  };
 
   useEffect(() => {
     graphqlApiAdmin(GraphqlRoute, requestApplicationBody).then((res) => {
       setLoading(false);
       const { data: { data: { getApplicationById } } } = res;
       setApplicationData(getApplicationById);
+      if (getApplicationById?.replies) {
+        setRepliesData(getApplicationById.replies);
+      }
+    }).catch(error => {
+      console.log(error);
+    });
+  }, []);
+
+  const sendReply = () => {
+    if (selectedFile.length < 2) {
+      setError(true);
+      setSelected(false);
+      return;
+    }
+
+    setLoading(true);
+    graphqlApiAdmin(GraphqlRoute, replySendBody).then((res) => {
+      setLoading(false);
+      setSelectedFile("");
+      setSelected(false);
+      const { data: { data: { sendReply } } } = res;
+      setRepliesData(sendReply);
     }).catch(error => {
       console.log(error);
     });
 
-    /* graphqlApiUser(GraphqlRoute, requestUpdateReply).then((res) => {
-    }).catch(error => {
-      console.log(error);
-    }); */
-  }, []);
+  }
 
+  useEffect(() => {
+    let count = 0;
+    repliesData?.map((reply) => {
+      if (reply.reply_from_id === adminId) {
+        count++;
+      }
+    });
 
-  //////////////////////////////////////////////////
-
+    if (count > 1) {
+      setSendDisabled(true);
+      //setReplyTransferred(true);
+    } else {
+      setSendDisabled(false);
+      //setReplyTransferred(false);
+    }
+  }, [repliesData]);
 
   const [transferModalOpened, setTransferModalOpened] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -99,7 +160,7 @@ const ApplicationView = () => {
     initialValues: { name: '', date: new Date(), organization: '', matter_details: '' },
     validate: (values) => ({
       name: values.name.length < 2 ? 'Invalid Name' : null,
-      date: !values.date ? 'Invalid Date': null,
+      date: !values.date ? 'Invalid Date' : null,
       orginzation: values.organization.length < 2 ? 'Invalid Orginization' : null,
       matter_details: values.matter_details.length < 2 ? 'Matter Details Cannot be empty' : null,
     }),
@@ -172,25 +233,33 @@ const ApplicationView = () => {
               <span className='text-xl font-semibold border-b-[1px] pb-3'>Applications Details</span>
 
               <div className='w-full flex justify-between items-center mt-1'>
-                  <div className='font-medium text-lg'>Applicant Name</div>
-                  <div className='font-semibold text-lg'>{ applicationData?.applicant_name }</div>
-                </div>
+                <div className='font-medium text-lg'>Applicant Name:</div>
+                <div className='font-semibold text-lg'>{applicationData?.applicant_name}</div>
+              </div>
 
-                <div className='w-full flex justify-between items-center mt-1'>
-                  <div className='font-medium text-lg'>Application Topic</div>
-                  <div className='font-semibold text-lg'>{ applicationData?.application_topic }</div>
-                </div>
+              <div className='w-full flex justify-between items-center mt-1'>
+                <div className='font-medium text-lg'>Topic:</div>
+                <div className='font-semibold text-lg'>{applicationData?.application_topic}</div>
+              </div>
 
-                <div className='w-full flex justify-between items-center mt-1'>
-                  <div className='font-medium text-lg'>Application Date</div>
-                  <div className='font-semibold text-lg'>{ new Date(parseInt(applicationData?.application_date+ "")).toLocaleDateString() }</div>
-                </div>
+              <div className='w-full flex justify-between items-center mt-1'>
+                <div className='font-medium text-lg'>Date:</div>
+                <div className='font-semibold text-lg'>{new Date(parseInt(applicationData?.application_date + "")).toLocaleDateString()}</div>
+              </div>
 
               <span className='text-xl font-semibold border-b-[1px] mt-8 pb-3'>Applications Replies</span>
 
               <div ref={bottomRef} className='flex flex-col w-full h-full max-h-full overflow-y-scroll'>
 
-                <ReplyListCardItem />
+                {
+                  repliesData ? (
+                    repliesData.map((reply, i) => {
+                      return <ReplyListCardItem replyProp={reply} key={i} />;
+                    })
+                  ) : (
+                    <div>No replies yet</div>
+                  )
+                }
 
               </div>
 
@@ -199,28 +268,80 @@ const ApplicationView = () => {
             <div className='my-4 sticky bottom-0 bg-white border-t-[1px]'>
 
               <div className='flex flex-col w-full'>
+
+                {applicationData?.application_closed && <Overlay opacity={0.6} color="#000" blur={2} />}
+
                 <span className='mt-8 mb-2 font-semibold'>Send your reply:</span>
 
+                {applicationData?.application_closed && (<span className=' font-semibold text-lg text-red-500'>Application Closed</span>)}
+
                 <Dropzone
-                  onDrop={(files) => console.log('accepted files', files)}
-                  onReject={(files) => console.log('rejected files', files)}
-                  maxSize={3 * 1024 ** 2}
+                  onDrop={
+                    (files) => {
+                      setError(false);
+                      setSelected(true);
+
+                      getBase64(files[0]).then((base64) => {
+                        setSelectedFile(base64 + "");
+                      });
+
+                    }
+                  }
+                  onReject={
+                    (files) => {
+                      console.log('rejected files', files);
+                      setError(true);
+                      setSelected(false);
+                    }
+                  }
+                  maxSize={6 * 1024 ** 2}
+                  multiple={false}
                   accept={['image/png', 'image/jpeg', 'image/sgv+xml', 'image/gif', 'application/pdf']}
                 >
                   {(status) => dropzoneChildren(status, theme)}
                 </Dropzone>
 
+                {
+                  error ? (
+                    <div className='w-full text-red-500'>Please select image or pdf file less than 6MB.</div>
+                  ) : (null)
+                }
+
+                {
+                  sendDisabled ? (
+                    <div className='w-full text-red-500'>Reply is closed or transferred</div>
+                  ) : (null)
+                }
+
+                {
+                  selected ? (
+                    <div className='w-full text-blue-500 font-bold'>File Selected</div>
+                  ) : (null)
+                }
+
               </div>
 
-              <Link to={`/`}>
-                <button className='my-2 w-full border-[1] font-semibold px-6 pt-[8px] pb-[10px] bg-blue-500 text-white rounded-lg hover:bg-blue-700'>Send Reply</button>
-              </Link>
+              {
+                !sendDisabled ? (
+                  <button onClick={sendReply} className='my-2 w-full border-[1] font-semibold px-6 pt-[8px] pb-[10px] bg-blue-500 text-white rounded-lg hover:bg-blue-700'>Send Reply</button>
+                ) : null
+              }
 
-              <div className='flex justify-between items-center'>
+              <div className='flex justify-between items-center gap-16'>
 
-                <button className='w-full mr-8 border-[1] font-semibold px-6 pt-[8px] pb-[10px] bg-blue-500 text-white rounded-lg hover:bg-blue-700'>Transfer to Appellate Authority</button>
+                {
+                  applicationData?.application_admin === "1" ? (
+                    <button className='w-full border-[1] font-semibold px-6 pt-[8px] pb-[10px] bg-blue-500 text-white rounded-lg hover:bg-blue-700'>Transfer to Appellate Authority</button>
+                  ) : null
+                }
 
-                <button onClick={() => setTransferModalOpened(true)} className='w-full ml-8 border-[1] font-semibold px-6 pt-[8px] pb-[10px] bg-blue-500 text-white rounded-lg hover:bg-blue-700'>Transfer to 3rd Party</button>
+                {
+                  !sendDisabled ? (
+                    <button onClick={() => setTransferModalOpened(true)} className='w-full border-[1] font-semibold px-6 pt-[8px] pb-[10px] bg-blue-500 text-white rounded-lg hover:bg-blue-700'>Transfer to 3rd Party</button>
+                  ) : null
+                }
+
+
 
               </div>
 
@@ -272,6 +393,8 @@ const ApplicationView = () => {
         </Box>
 
       </Modal>
+
+      <LoadingOverlay visible={loading} />
 
     </>
   )
