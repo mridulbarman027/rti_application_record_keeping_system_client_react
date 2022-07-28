@@ -2,10 +2,12 @@ import { Box, Button, Group, LoadingOverlay, Modal, Overlay, Textarea, TextInput
 import { DatePicker } from '@mantine/dates';
 import { Dropzone } from '@mantine/dropzone';
 import { useForm } from '@mantine/form';
+import { showNotification } from '@mantine/notifications';
 import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { IApplicationListItem, IReply } from '../../../@types';
 import { graphqlApiAdmin } from '../../../api';
+import ApplicationDetailsItem from '../../../components/Common/Cards/ApplicationDetailsItem';
 import ReplyListCardItem from '../../../components/Common/Cards/ReplyListCardItem';
 import { dropzoneChildren } from '../../../components/Common/FileInputs/DropzoneContent';
 import AdminNavbar from '../../../components/Common/Navbar/Admin/AdminNavbar'
@@ -58,6 +60,12 @@ const ApplicationView = () => {
           application_admin
           reply_viewed
           reply_3party
+          reply_3party_details {
+            name
+            date
+            organization
+            matter_details
+          }
           replies {
             id
             application_id
@@ -202,7 +210,66 @@ const ApplicationView = () => {
   const submitTransferForm = (values: ITransferFormValues) => {
     setLoading(true);
 
-    //
+    const reply3partyBody = {
+      query: `
+        mutation{
+          transfer3Party(partyData: {
+            applicationId: "${applicationId}",
+            date: "${values.date}",
+            name: "${values.name}",
+            organization: "${values.organization}",
+            matter_details: "${values.matter_details}",
+          }) {
+            id
+            userid
+            applicant_name
+            application_date
+            mode_of_payment
+            payment_ref_no
+            application_topic
+            application_time
+            application_admin
+            application_closed
+            application_admin
+            reply_viewed
+            reply_3party
+            reply_3party_details {
+              name
+              date
+              organization
+              matter_details
+            }
+            replies {
+              id
+              application_id
+              reply_time
+              reply_from_id
+              reply_from_name
+              reply_from
+              reply_file
+            }
+          }
+        }
+      `
+    }
+
+    graphqlApiAdmin(GraphqlRoute, reply3partyBody).then((res) => {
+      setLoading(false);
+      setSelectedFile("");
+      setSelected(false);
+      setSendDisabled(true);
+      showNotification({
+        title: 'Sucess',
+        message: '3rd Party Details send successfully',
+        autoClose: 2000,
+      });
+      const { data: { data: { transfer3Party } } } = res;
+      setApplicationData(transfer3Party);
+      transferForm.reset();
+      setTransferModalOpened(false);
+    }).catch(error => {
+      console.log(error);
+    });
 
   }
 
@@ -217,24 +284,34 @@ const ApplicationView = () => {
 
           <div className='flex w-[720px] flex-col justify-between max-w-[720px] min-w-max mt-6 min-h-[calc(100vh-12rem)] h-full'>
 
-            <div className='flex flex-col justify-center'>
+            <div className='flex flex-col justify-center w-full'>
 
               <span className='text-xl font-semibold border-b-[1px] pb-3'>Applications Details</span>
 
-              <div className='w-full flex justify-between items-center mt-1'>
-                <div className='font-medium text-lg'>Applicant Name:</div>
-                <div className='font-semibold text-lg'>{applicationData?.applicant_name}</div>
-              </div>
+              <ApplicationDetailsItem label={`Applicant Name: `} value={applicationData?.applicant_name} />
+              
+              <ApplicationDetailsItem label={`Topic: `} value={applicationData?.application_topic} />
+              
+              <ApplicationDetailsItem label={`Date: `} value={new Date(parseInt(applicationData?.application_date + "")).toLocaleDateString()} />
 
-              <div className='w-full flex justify-between items-center mt-1'>
-                <div className='font-medium text-lg'>Topic:</div>
-                <div className='font-semibold text-lg'>{applicationData?.application_topic}</div>
-              </div>
+              {
+                applicationData?.reply_3party ? (
 
-              <div className='w-full flex justify-between items-center mt-1'>
-                <div className='font-medium text-lg'>Date:</div>
-                <div className='font-semibold text-lg'>{new Date(parseInt(applicationData?.application_date + "")).toLocaleDateString()}</div>
-              </div>
+                  <>
+                    <span className='text-xl font-semibold border-b-[1px] mt-8 pb-3'>Applications 3rd Party Transfer</span>
+
+                    <ApplicationDetailsItem label={`Party Name: `} value={applicationData?.reply_3party_details.name} />
+                    
+                    <ApplicationDetailsItem label={`Organization Details: `} value={applicationData?.reply_3party_details.organization} />
+                    
+                    <ApplicationDetailsItem label={`Date: `} value={new Date(parseInt(applicationData?.reply_3party_details.date + "")).toLocaleDateString()} />
+                    
+                    <ApplicationDetailsItem label={`Matter Details: `} value={applicationData?.reply_3party_details.matter_details} />
+
+                  </>
+
+                ) : null
+              }
 
               <span className='text-xl font-semibold border-b-[1px] mt-8 pb-3'>Applications Replies</span>
 
@@ -312,26 +389,26 @@ const ApplicationView = () => {
 
               {!replyTransferredOrClosed ? (
                 <>
-                
-                {!sendDisabled ? (
-                  <button onClick={sendReply} className='my-2 w-full border-[1] font-semibold px-6 pt-[8px] pb-[10px] bg-blue-500 text-white rounded-lg hover:bg-blue-700'>Send Reply</button>
-                ) : null}
 
-                <div className='flex justify-between items-center gap-16'>
+                  {!sendDisabled ? (
+                    <button onClick={sendReply} className='my-2 w-full border-[1] font-semibold px-6 pt-[8px] pb-[10px] bg-blue-500 text-white rounded-lg hover:bg-blue-700'>Send Reply</button>
+                  ) : null}
 
-                  {
-                    (applicationData?.application_admin === "1" && adminType === "1") ? (
-                      <button onClick={transferAuthority} className='w-full border-[1] font-semibold px-6 pt-[8px] pb-[10px] bg-blue-500 text-white rounded-lg hover:bg-blue-700'>Transfer to Appellate Authority</button>
-                    ) : null
-                  }
+                  <div className='flex justify-between items-center gap-16'>
 
-                  {
-                    !sendDisabled ? (
-                      <button onClick={() => setTransferModalOpened(true)} className='w-full border-[1] font-semibold px-6 pt-[8px] pb-[10px] bg-blue-500 text-white rounded-lg hover:bg-blue-700'>Transfer to 3rd Party</button>
-                    ) : null
-                  }
+                    {
+                      (applicationData?.application_admin === "1" && adminType === "1") ? (
+                        <button onClick={transferAuthority} className='w-full border-[1] font-semibold px-6 pt-[8px] pb-[10px] bg-blue-500 text-white rounded-lg hover:bg-blue-700'>Transfer to Appellate Authority</button>
+                      ) : null
+                    }
 
-                </div>
+                    {
+                      !sendDisabled ? (
+                        <button onClick={() => setTransferModalOpened(true)} className='w-full border-[1] font-semibold px-6 pt-[8px] pb-[10px] bg-blue-500 text-white rounded-lg hover:bg-blue-700'>Transfer to 3rd Party</button>
+                      ) : null
+                    }
+
+                  </div>
 
                 </>
               ) : null}

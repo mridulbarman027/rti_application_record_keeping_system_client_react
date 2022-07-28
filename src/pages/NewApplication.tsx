@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { graphqlApiUser } from '../api';
 import NavBar from '../components/Common/Navbar/NavBar';
+import { useAuthUser } from '../hooks';
 import { GraphqlRoute } from '../utils';
 
 interface IApplicationFormValues {
@@ -23,6 +24,8 @@ const NewApplication = () => {
   const userId = localStorage.getItem('userId');
 
   const navigate = useNavigate();
+
+  useAuthUser(GraphqlRoute, navigate);
 
   const userInfoRequestBody = {
     query: `

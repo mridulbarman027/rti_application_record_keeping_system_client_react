@@ -2,7 +2,7 @@ export interface IReplyTransfer {
     date: object,
     name: string,
     organization: string,
-    matter_detail: string
+    matter_details: string
 }
 
 export interface IReply {
