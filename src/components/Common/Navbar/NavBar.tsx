@@ -48,7 +48,7 @@ const NavBar = () => {
 
             {
                 isLoggedIn ? (
-                    <div onClick={logout} className='font-semibold text-red-500 mx-10 cursor-pointer hover:underline'>Logo Out</div>
+                    <div onClick={logout} className='font-semibold text-red-500 mx-10 cursor-pointer hover:underline'>Log Out</div>
                 ) : null
             }
 
