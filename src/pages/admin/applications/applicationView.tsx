@@ -25,6 +25,7 @@ const ApplicationView = () => {
   const applicationId = params.applicationId;
 
   const adminId = localStorage.getItem('adminId');
+  const [adminType, setAdminType] = useState<string>(localStorage.getItem('adminType') + "");
 
   const navigate = useNavigate();
 
@@ -32,7 +33,7 @@ const ApplicationView = () => {
   const [error, setError] = useState(false);
   const [selected, setSelected] = useState(false);
   const [sendDisabled, setSendDisabled] = useState(true);
-  //const [replyTransferredOrClosed, setReplyTransferredOrClosed] = useState(true);
+  const [replyTransferredOrClosed, setReplyTransferredOrClosed] = useState(true);
   const [applicationData, setApplicationData] = useState<IApplicationListItem>();
   const [repliesData, setRepliesData] = useState<IReply[]>();
 
@@ -54,6 +55,7 @@ const ApplicationView = () => {
           application_time
           application_admin
           application_closed
+          application_admin
           reply_viewed
           reply_3party
           replies {
@@ -103,6 +105,12 @@ const ApplicationView = () => {
       if (getApplicationById?.replies) {
         setRepliesData(getApplicationById.replies);
       }
+
+      if (getApplicationById.application_admin !== adminType) {
+        setReplyTransferredOrClosed(true);
+      } else {
+        setReplyTransferredOrClosed(false);
+      }
     }).catch(error => {
       console.log(error);
     });
@@ -145,6 +153,31 @@ const ApplicationView = () => {
     }
   }, [repliesData]);
 
+  const transferAuthority = () => {
+    const transferAuthBody = {
+      query: `
+        mutation {
+          transferAuthority (
+            applicationId: "${applicationId}",
+            fromId: "${adminId}",
+          ) {
+            submitted
+          }
+        }
+      `
+    };
+    setLoading(true);
+    graphqlApiAdmin(GraphqlRoute, transferAuthBody).then((res) => {
+      setLoading(false);
+      setSelectedFile("");
+      setSelected(false);
+      setAdminType("2");
+      setSendDisabled(true);
+    }).catch(error => {
+      console.log(error);
+    });
+  }
+
   const [transferModalOpened, setTransferModalOpened] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -161,7 +194,7 @@ const ApplicationView = () => {
     validate: (values) => ({
       name: values.name.length < 2 ? 'Invalid Name' : null,
       date: !values.date ? 'Invalid Date' : null,
-      orginzation: values.organization.length < 2 ? 'Invalid Orginization' : null,
+      organization: values.organization.length < 2 ? 'Invalid Organization' : null,
       matter_details: values.matter_details.length < 2 ? 'Matter Details Cannot be empty' : null,
     }),
   });
@@ -169,51 +202,7 @@ const ApplicationView = () => {
   const submitTransferForm = (values: ITransferFormValues) => {
     setLoading(true);
 
-    const applicaitonRequestBody = {
-      /* query: `
-        mutation {
-          createApplication(applicationData: {
-            userid: "${userId}",
-            applicant_name: "${values.name}",
-            application_date: "${values.date}",
-            mode_of_payment: "${values.payment}",
-            payment_ref_no: "${values.ref}"
-            application_topic: "${values.topic}"
-          }) {
-            submitted
-          }
-        }
-      ` */
-    }
-
-    /* axios.post(GraphqlApi, applicaitonRequestBody).then((res) => {
-      setLoading(false);
-
-      const result = res.data;
-      const applicaitonData = result as { createApplication: { 'submitted': boolean } };
-      const errors = result.errors;
-      if (applicaitonData && !errors) {
-        showNotification({
-          title: 'Application Submitted',
-          message: 'Application submitted successfully. Keep checking the replies.',
-          autoClose: 2000,
-        });
-        navigate('/');
-      } else {
-        showNotification({
-          title: 'Error submitting the applicaiton',
-          message: 'Something went wrong',
-          autoClose: 2000,
-        });
-      }
-    }).catch(error => {
-      setLoading(false);
-      showNotification({
-        title: 'Error submitting the applicaiton',
-        message: 'Something went wrong',
-        autoClose: 2000,
-      });
-    }); */
+    //
 
   }
 
@@ -308,7 +297,7 @@ const ApplicationView = () => {
                 }
 
                 {
-                  sendDisabled ? (
+                  (sendDisabled || replyTransferredOrClosed) ? (
                     <div className='w-full text-red-500'>Reply is closed or transferred</div>
                   ) : (null)
                 }
@@ -321,29 +310,31 @@ const ApplicationView = () => {
 
               </div>
 
-              {
-                !sendDisabled ? (
+              {!replyTransferredOrClosed ? (
+                <>
+                
+                {!sendDisabled ? (
                   <button onClick={sendReply} className='my-2 w-full border-[1] font-semibold px-6 pt-[8px] pb-[10px] bg-blue-500 text-white rounded-lg hover:bg-blue-700'>Send Reply</button>
-                ) : null
-              }
+                ) : null}
 
-              <div className='flex justify-between items-center gap-16'>
+                <div className='flex justify-between items-center gap-16'>
 
-                {
-                  applicationData?.application_admin === "1" ? (
-                    <button className='w-full border-[1] font-semibold px-6 pt-[8px] pb-[10px] bg-blue-500 text-white rounded-lg hover:bg-blue-700'>Transfer to Appellate Authority</button>
-                  ) : null
-                }
+                  {
+                    (applicationData?.application_admin === "1" && adminType === "1") ? (
+                      <button onClick={transferAuthority} className='w-full border-[1] font-semibold px-6 pt-[8px] pb-[10px] bg-blue-500 text-white rounded-lg hover:bg-blue-700'>Transfer to Appellate Authority</button>
+                    ) : null
+                  }
 
-                {
-                  !sendDisabled ? (
-                    <button onClick={() => setTransferModalOpened(true)} className='w-full border-[1] font-semibold px-6 pt-[8px] pb-[10px] bg-blue-500 text-white rounded-lg hover:bg-blue-700'>Transfer to 3rd Party</button>
-                  ) : null
-                }
+                  {
+                    !sendDisabled ? (
+                      <button onClick={() => setTransferModalOpened(true)} className='w-full border-[1] font-semibold px-6 pt-[8px] pb-[10px] bg-blue-500 text-white rounded-lg hover:bg-blue-700'>Transfer to 3rd Party</button>
+                    ) : null
+                  }
 
+                </div>
 
-
-              </div>
+                </>
+              ) : null}
 
             </div>
 
@@ -380,7 +371,7 @@ const ApplicationView = () => {
               {...transferForm.getInputProps('date')}
             />
 
-            <TextInput mt="sm" label="Orginization" placeholder="Orginization" {...transferForm.getInputProps('organization')} />
+            <TextInput mt="sm" label="Organization" placeholder="Organization" {...transferForm.getInputProps('organization')} />
 
             <Textarea mt="sm" label="Matter Detail" placeholder="Matter Detail" {...transferForm.getInputProps('matter_details')} />
 
