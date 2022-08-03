@@ -1,4 +1,4 @@
-import { Box, Button, Group, LoadingOverlay, Select, TextInput } from '@mantine/core';
+import { Box, Button, Group, LoadingOverlay, Select, Textarea, TextInput } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
@@ -10,11 +10,12 @@ import { useAuthUser } from '../hooks';
 import { GraphqlRoute } from '../utils';
 
 interface IApplicationFormValues {
-  name: string; 
+  name: string;
   topic: string;
   date: Date;
   payment: string;
-  ref: string | undefined
+  ref: string | undefined;
+  desc: string | undefined;
 }
 
 const NewApplication = () => {
@@ -47,8 +48,8 @@ const NewApplication = () => {
     });
   }, []);
 
-  const form = useForm<{ name: string; topic: string; date: Date; payment: string; ref: string | undefined}>({
-    initialValues: { name: '', topic: '', date: new Date(), payment: '', ref: '' },
+  const form = useForm<{ name: string; topic: string; date: Date; payment: string; ref: string | undefined, desc: string | undefined }>({
+    initialValues: { name: '', topic: '', date: new Date(), payment: '', ref: '', desc: '' },
     validate: (values) => ({
       name: values.name.length < 2 ? 'Invalid Name' : null,
       topic: values.topic.length < 2 ? 'Invalid Topic' : null,
@@ -67,8 +68,9 @@ const NewApplication = () => {
             applicant_name: "${values.name}",
             application_date: "${values.date}",
             mode_of_payment: "${values.payment}",
-            payment_ref_no: "${values.ref}"
-            application_topic: "${values.topic}"
+            payment_ref_no: "${values.ref}",
+            application_topic: "${values.topic}",
+            application_desc: "${values.desc}"
           }) {
             submitted
           }
@@ -108,7 +110,7 @@ const NewApplication = () => {
   }
 
   return (
-    
+
     <>
       <NavBar />
 
@@ -120,9 +122,9 @@ const NewApplication = () => {
 
           <form onSubmit={form.onSubmit((values) => submitApplicationForm(values))}>
 
-            <TextInput mt="sm" label="Applicant Name" placeholder="Applicant Name" {...form.getInputProps('name')}/>
+            <TextInput mt="sm" label="Applicant Name" placeholder="Applicant Name" {...form.getInputProps('name')} />
 
-            <TextInput mt="sm" label="Application Topic" placeholder="Application Topic" {...form.getInputProps('topic')}/>
+            <TextInput mt="sm" label="Application Topic" placeholder="Application Topic" {...form.getInputProps('topic')} />
 
             <DatePicker
               mt="sm"
@@ -153,9 +155,11 @@ const NewApplication = () => {
                 />
               </div>
               <div className='flex justify-center items-center h-full '>
-                <TextInput label="Payment Ref No" placeholder="Payment Ref No" {...form.getInputProps('ref')}/>
+                <TextInput label="Payment Ref No" placeholder="Payment Ref No" {...form.getInputProps('ref')} />
               </div>
             </div>
+
+            <Textarea mt="sm" label="Application Description" placeholder="Application Description" {...form.getInputProps('desc')} />
 
             <Group position="right" mt="md">
               <Button type="submit" className='bg-blue-600'>Submit</Button>
@@ -168,7 +172,7 @@ const NewApplication = () => {
       </div>
 
       <LoadingOverlay visible={loading} />
-      
+
     </>
   )
 }
