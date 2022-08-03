@@ -24,6 +24,7 @@ export interface IApplicationListItem {
     mode_of_payment?: string,
     payment_ref_no?: string,
     application_topic?: string,
+    application_desc?: string,
     application_time?: string,
     application_admin?: string,
     application_closed?: boolean,

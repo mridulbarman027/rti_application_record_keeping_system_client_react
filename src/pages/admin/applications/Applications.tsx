@@ -48,6 +48,7 @@ const Applications = () => {
           mode_of_payment
           payment_ref_no
           application_topic
+          application_desc
           application_time
           application_admin
           application_closed

@@ -33,6 +33,7 @@ const ViewReplies = () => {
           mode_of_payment
           payment_ref_no
           application_topic
+          application_desc
           application_time
           application_admin
           application_closed
@@ -112,6 +113,12 @@ const ViewReplies = () => {
                 <ApplicationDetailsItem label={`Date: `} value={new Date(parseInt(applicationData?.application_date + "")).toLocaleDateString()} />
 
                 {
+                  (applicationData?.application_desc &&
+                    <ApplicationDetailsItem label={`Description: `} value={applicationData?.application_desc} />
+                  )
+                }
+
+                {
                   applicationData?.reply_3party ? (
 
                     <>
@@ -134,15 +141,15 @@ const ViewReplies = () => {
 
                 <div className='flex flex-col w-full h-full max-h-full overflow-y-scroll'>
 
-                {
-                  repliesData ? (
-                    repliesData.map((reply, i) => {
-                      return <ReplyListCardItem replyProp={reply} key={i} />;
-                    })
-                  ) : (
-                    <div>No replies yet</div>
-                  )
-                }
+                  {
+                    repliesData ? (
+                      repliesData.map((reply, i) => {
+                        return <ReplyListCardItem replyProp={reply} key={i} />;
+                      })
+                    ) : (
+                      <div>No replies yet</div>
+                    )
+                  }
 
                 </div>
 

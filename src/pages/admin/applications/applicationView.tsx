@@ -227,6 +227,7 @@ const ApplicationView = () => {
             mode_of_payment
             payment_ref_no
             application_topic
+            application_desc
             application_time
             application_admin
             application_closed
@@ -289,10 +290,16 @@ const ApplicationView = () => {
               <span className='text-xl font-semibold border-b-[1px] pb-3'>Applications Details</span>
 
               <ApplicationDetailsItem label={`Applicant Name: `} value={applicationData?.applicant_name} />
-              
+
               <ApplicationDetailsItem label={`Topic: `} value={applicationData?.application_topic} />
-              
+
               <ApplicationDetailsItem label={`Date: `} value={new Date(parseInt(applicationData?.application_date + "")).toLocaleDateString()} />
+
+              {
+                (applicationData?.application_desc &&
+                  <ApplicationDetailsItem label={`Description: `} value={applicationData?.application_desc} />
+                )
+              }
 
               {
                 applicationData?.reply_3party ? (
@@ -301,11 +308,11 @@ const ApplicationView = () => {
                     <span className='text-xl font-semibold border-b-[1px] mt-8 pb-3'>Applications 3rd Party Transfer</span>
 
                     <ApplicationDetailsItem label={`Party Name: `} value={applicationData?.reply_3party_details.name} />
-                    
+
                     <ApplicationDetailsItem label={`Organization Details: `} value={applicationData?.reply_3party_details.organization} />
-                    
+
                     <ApplicationDetailsItem label={`Date: `} value={new Date(parseInt(applicationData?.reply_3party_details.date + "")).toLocaleDateString()} />
-                    
+
                     <ApplicationDetailsItem label={`Matter Details: `} value={applicationData?.reply_3party_details.matter_details} />
 
                   </>
