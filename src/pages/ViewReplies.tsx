@@ -122,7 +122,7 @@ const ViewReplies = () => {
                   applicationData?.reply_3party ? (
 
                     <>
-                      <span className='text-xl font-semibold border-b-[1px] mt-8 pb-3'>Applications 3rd Party Transfer</span>
+                      <span className='text-xl font-semibold border-b-[1px] mt-8 pb-3'>Deemed to be SPIO</span>
 
                       <ApplicationDetailsItem label={`Party Name: `} value={applicationData?.reply_3party_details.name} />
 
@@ -159,7 +159,7 @@ const ViewReplies = () => {
 
         </div>
 
-      </div >
+      </div>
     </>
   )
 }

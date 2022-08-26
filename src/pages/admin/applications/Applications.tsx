@@ -7,7 +7,7 @@ import { BsSearch } from "react-icons/bs";
 import { DateRangePicker } from '@mantine/dates';
 import { useEffect, useState } from 'react';
 import { showNotification } from '@mantine/notifications';
-import { graphqlApiUser } from '../../../api';
+import { graphqlApiAdmin, graphqlApiUser } from '../../../api';
 import { IApplicationListItem } from '../../../@types';
 import ApplicationListCardItemAdmin from '../../../components/Common/Cards/ApplicationListCardItemAdmin';
 
@@ -73,7 +73,7 @@ const Applications = () => {
       });
     } else {
 
-      graphqlApiUser(GraphqlRoute, requestBody).then((res) => {
+      graphqlApiAdmin(GraphqlRoute, requestBody).then((res) => {
         const { data: { data: { searchApplicaitonsAdmin } } } = res;
         setApplicaitonList(searchApplicaitonsAdmin);
       }).catch(error => {

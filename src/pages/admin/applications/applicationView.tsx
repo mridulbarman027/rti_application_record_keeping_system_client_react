@@ -186,6 +186,31 @@ const ApplicationView = () => {
     });
   }
 
+  const transferAuthoritySecond = () => {
+    const transferAuthBodySecond = {
+      query: `
+        mutation {
+          transferAuthoritySecond (
+            applicationId: "${applicationId}",
+            fromId: "${adminId}",
+          ) {
+            submitted
+          }
+        }
+      `
+    };
+    setLoading(true);
+    graphqlApiAdmin(GraphqlRoute, transferAuthBodySecond).then((res) => {
+      setLoading(false);
+      setSelectedFile("");
+      setSelected(false);
+      setAdminType("3");
+      setSendDisabled(true);
+    }).catch(error => {
+      console.log(error);
+    });
+  }
+
   const [transferModalOpened, setTransferModalOpened] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -305,7 +330,7 @@ const ApplicationView = () => {
                 applicationData?.reply_3party ? (
 
                   <>
-                    <span className='text-xl font-semibold border-b-[1px] mt-8 pb-3'>Applications 3rd Party Transfer</span>
+                    <span className='text-xl font-semibold border-b-[1px] mt-8 pb-3'>Deemed to be SPIO Transfer</span>
 
                     <ApplicationDetailsItem label={`Party Name: `} value={applicationData?.reply_3party_details.name} />
 
@@ -410,8 +435,14 @@ const ApplicationView = () => {
                     }
 
                     {
+                      (applicationData?.application_admin === "2" && adminType === "2") ? (
+                        <button onClick={transferAuthoritySecond} className='w-full border-[1] font-semibold px-6 pt-[8px] pb-[10px] bg-blue-500 text-white rounded-lg hover:bg-blue-700'>Transfer to 2nd Appellate Authority</button>
+                      ) : null
+                    }
+
+                    {
                       !sendDisabled ? (
-                        <button onClick={() => setTransferModalOpened(true)} className='w-full border-[1] font-semibold px-6 pt-[8px] pb-[10px] bg-blue-500 text-white rounded-lg hover:bg-blue-700'>Transfer to 3rd Party</button>
+                        <button onClick={() => setTransferModalOpened(true)} className='w-full border-[1] font-semibold px-6 pt-[8px] pb-[10px] bg-blue-500 text-white rounded-lg hover:bg-blue-700'>Deemed to be SPIO</button>
                       ) : null
                     }
 

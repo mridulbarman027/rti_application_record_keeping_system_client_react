@@ -149,7 +149,10 @@ const NewApplication = () => {
                     { value: 'bank_transfer', label: 'Bank Transfer' },
                     { value: 'cheque', label: 'Cheque' },
                     { value: 'online_payment', label: 'Online Payment' },
-                    { value: 'tresary_challan', label: 'Tesary Challan' }
+                    { value: 'tresary_challan', label: 'Tesary Challan' },
+                    { value: 'postal_pay_order', label: 'Postal Pay Order' },
+                    { value: 'court_fee', label: 'Court Fee' },
+                    { value: 'other', label: 'Other' },
                   ]}
                   {...form.getInputProps('payment')}
                 />
